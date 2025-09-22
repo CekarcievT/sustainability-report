@@ -1,0 +1,99 @@
+﻿@page "/"
+
+@using DTOs.Shared
+@inject SustainabilityReportingUI.Services.UsageService UsageService
+@inject SustainabilityReportingUI.Services.MockAuthService AuthService
+
+<PageTitle>Home</PageTitle>
+
+<MudPaper Class="pa-4">
+    <MudText Typo="Typo.h5">Monthly Usage Data</MudText>
+
+    <MudStack Row="true" Spacing="2" Class="mb-4">
+        <InputFile OnChange="OnFileSelected" accept=".csv" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="UploadFile" Disabled="@(_selectedFile is null)">
+            Upload
+        </MudButton>
+        @if (!string.IsNullOrEmpty(_uploadMessage))
+        {
+            <MudText Typo="Typo.body2" Color="Color.Info">@_uploadMessage</MudText>
+        }
+    </MudStack>
+
+    <MudTable Items="_usages" Dense="true" Hover="true">
+        <HeaderContent>
+            <MudTh>Vendor ID</MudTh>
+            <MudTh>Month</MudTh>
+            <MudTh>Usage Amount</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Vendor ID">@context.VendorId</MudTd>
+            <MudTd DataLabel="Month">@context.PeriodStart.ToString("MM yyyy")</MudTd>
+            <MudTd DataLabel="Usage Amount">@context.UsageAmount.ToString("F2")</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
+
+@code {
+    private List<MonthlyUsageDto>? _usages;
+    private IBrowserFile? _selectedFile;
+    private string? _uploadMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthService.AuthStateChanged += OnAuthStateChanged;
+        if (AuthService.IsAuthenticated)
+        {
+            await LoadUsagesAsync();
+        }
+    }
+
+    private async void OnAuthStateChanged()
+    {
+        if (AuthService.IsAuthenticated)
+        {
+            await LoadUsagesAsync();
+            StateHasChanged();
+        }
+        else
+        {
+            _usages = null;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadUsagesAsync()
+    {
+        _usages = await UsageService.GetMonthlyUsageAsync();
+    }
+
+    private void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        _selectedFile = e.File;
+        _uploadMessage = null;
+    }
+
+    private async Task UploadFile()
+    {
+        if (_selectedFile is not null)
+        {
+            var response = await UsageService.UploadCsvAsync(_selectedFile);
+            if (response.IsSuccessStatusCode)
+            {
+                _uploadMessage = "Upload successful!";
+                if (AuthService.IsAuthenticated)
+                    await LoadUsagesAsync();
+            }
+            else
+            {
+                _uploadMessage = "Upload failed.";
+            }
+            _selectedFile = null;
+        }
+    }
+
+    public void Dispose()
+    {
+        AuthService.AuthStateChanged -= OnAuthStateChanged;
+    }
+}

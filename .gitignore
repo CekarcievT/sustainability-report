@@ -1,0 +1,15 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SustainabilityReporting/.vs
+/SustainabilityReporting/DataContext.Shared/bin/Debug/net9.0
+/SustainabilityReporting/DTOs.Shared/bin/Debug/net9.0
+/SustainabilityReporting/DTOs.Shared/obj
+/SustainabilityReporting/SustainabilityReportingAPI/bin/Debug/net9.0
+/SustainabilityReporting/SustainabilityReportingAPI/obj
+/SustainabilityReporting/SustainabilityReportingUI/bin/Debug/net9.0
+/SustainabilityReporting/SustainabilityReportingUI/obj
+/SustainabilityReporting/SustainabilityReportingAPI/appsettings.json
+/SustainabilityReporting/SustainabilityReportingAPI/appsettings.Development.json
+/SustainabilityReporting/DataContext.Shared/obj

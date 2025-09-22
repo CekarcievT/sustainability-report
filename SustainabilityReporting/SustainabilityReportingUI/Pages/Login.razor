@@ -1,0 +1,40 @@
+@page "/login"
+@inject SustainabilityReportingUI.Services.MockAuthService AuthService
+@inject NavigationManager Navigation
+
+<MudPaper Class="pa-4 ma-4">
+    <MudText Typo="Typo.h6">Mock Microsoft Entra ID Login</MudText>
+    <MudSelect T="string" @bind-Value="_selectedUser" Label="Select User" Style="width: 200px;">
+        @foreach (var user in _users)
+        {
+            <MudSelectItem Value="@user.Value">@user.DisplayName</MudSelectItem>
+        }
+    </MudSelect>
+    <MudButton OnClick="UserLogin" Disabled="@string.IsNullOrEmpty(_selectedUser)" Variant="Variant.Filled" Color="Color.Primary" Class="ml-2">Login</MudButton>
+</MudPaper>
+
+@code {
+    private string? _selectedUser;
+
+    private List<UserOption> _users = new()
+    {
+        new UserOption { Value = "group_A", DisplayName = "User A" },
+        new UserOption { Value = "group_B", DisplayName = "User B" },
+        new UserOption { Value = "Manager", DisplayName = "Manager" }
+    };
+
+    private void UserLogin()
+    {
+        if (!string.IsNullOrEmpty(_selectedUser))
+        {
+            AuthService.Login(_selectedUser);
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private class UserOption
+    {
+        public string Value { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+    }
+}

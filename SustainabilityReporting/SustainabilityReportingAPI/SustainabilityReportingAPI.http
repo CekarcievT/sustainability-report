@@ -1,0 +1,6 @@
+@SustainabilityReportingAPI_HostAddress = http://localhost:5081
+
+GET {{SustainabilityReportingAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
