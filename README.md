@@ -78,3 +78,6 @@ The UI will be available at `https://localhost:PORT/`.
 - **Monitoring**: Use Azure Monitor for logging and monitoring.
 - **Secrets Management**: Use Azure Key Vault for all secrets and connection strings.
 - **Documentation**: Add Swagger/OpenAPI (already included via Swashbuckle) for API docs.
+
+## Solution Diagram
+![Sustainability](SustainabilityReporting/Sustainability.jpg)
